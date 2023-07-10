@@ -2,11 +2,30 @@
   <nav class="main-header__nav">
     <ul class="main-header__item-list">
       <li class="main-header__item">
-        <a class="<%= active === 'home' ? 'active' : '' %>" href="/">Shop</a>
+        <a class="<%= active === '/' ? 'active' : '' %>" href="/">Home</a>
       </li>
       <li class="main-header__item">
         <a
-          class="<%= active === 'add-product' ? 'active' : '' %>"
+          class="<%= active === '/products' ? 'active' : '' %>"
+          href="/products"
+          >Products</a
+        >
+      </li>
+      <li class="main-header__item">
+        <a class="<%= active === '/cart' ? 'active' : '' %>" href="/cart"
+          >My Cart</a
+        >
+      </li>
+      <li class="main-header__item">
+        <a
+          class="<%= active === '/admin/products' ? 'active' : '' %>"
+          href="/admin/products"
+          >Admin Products</a
+        >
+      </li>
+      <li class="main-header__item">
+        <a
+          class="<%= active === '/admin/add-product' ? 'active' : '' %>"
           href="/admin/add-product"
           >Add Product</a
         >
