@@ -33,3 +33,10 @@ exports.getCheckout = (req, res, next) => {
     active: "/checkout",
   });
 };
+
+exports.getOrders = (req, res, next) => {
+  res.render("shop/orders", {
+    pageTitle: "My Orders",
+    active: "/orders",
+  });
+};
