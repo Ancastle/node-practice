@@ -1,10 +1,13 @@
 const Product = require("../models/product");
 
 exports.getHome = (req, res, next) => {
-  res.render("shop/home", {
-    pageTitle: "Welcome Home",
-    active: "/",
-  });
+  Product.fetchAll((products) =>
+    res.render("shop/home", {
+      pageTitle: "Welcome Home",
+      active: "/",
+      products: products,
+    })
+  );
 };
 
 exports.getCart = (req, res, next) => {
