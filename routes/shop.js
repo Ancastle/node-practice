@@ -12,6 +12,8 @@ router.get("/products/:productId", shopController.getProduct);
 
 router.get("/cart", shopController.getCart);
 
+router.post("/cart", shopController.addToCart);
+
 router.get("/checkout", shopController.getCheckout);
 
 router.get("/orders", shopController.getOrders);

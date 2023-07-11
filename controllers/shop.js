@@ -17,6 +17,11 @@ exports.getCart = (req, res, next) => {
   });
 };
 
+exports.addToCart = (req, res, next) => {
+  const productId = req.body.productId;
+  console.log(productId);
+};
+
 exports.getProducts = (req, res, next) => {
   Product.fetchAll((products) =>
     res.render("shop/product-list", {
