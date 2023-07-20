@@ -1,9 +1,1 @@
-[
-  {
-    "title": "Dog",
-    "imageUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTK2nG24AYDm6FOEC7jIfgubO96GbRso2Xshu1f8abSYQ&s",
-    "description": "A wild dog that will 100% kill you",
-    "price": "1",
-    "id": "0.10288469300973757"
-  }
-]
+[{"title":"Dog","imageUrl":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTK2nG24AYDm6FOEC7jIfgubO96GbRso2Xshu1f8abSYQ&s","description":"A wild dog that will 100% kill you","price":"1","id":"0.10288469300973757"},{"title":"Cat","imageUrl":"https://i.pinimg.com/474x/a7/e8/89/a7e889effe08ecbede2ddaafbecdbd66.jpg","description":"Cool cat","price":"50","id":"0.08137643436829123"}]
