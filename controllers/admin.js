@@ -20,9 +20,16 @@ exports.getEditProduct = (req, res, next) => {
   });
 };
 
+exports.updateProduct = (req, res, next) => {
+  const { id, title, imageUrl, description, price } = req.body;
+  const updatedProduct = new Product(id, title, imageUrl, description, price);
+  updatedProduct.save();
+  res.redirect("/admin/products");
+};
+
 exports.postAddProduct = (req, res, next) => {
   const { title, imageUrl, description, price } = req.body;
-  const newProduct = new Product(title, imageUrl, description, price);
+  const newProduct = new Product(null, title, imageUrl, description, price);
   newProduct.save();
   res.redirect("/");
 };

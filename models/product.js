@@ -15,20 +15,32 @@ const getProductsFromFile = (callBack) => {
 };
 
 module.exports = class Product {
-  constructor(title, imageUrl, description, price) {
+  constructor(id, title, imageUrl, description, price) {
+    this.id = id;
     this.title = title;
     this.imageUrl = imageUrl;
     this.description = description;
     this.price = price;
-    this.id = Math.random().toString();
   }
 
   save() {
     getProductsFromFile((products) => {
-      products.push(this);
-      fs.writeFile(dataPath, JSON.stringify(products), (error) => {
-        console.log(error, "error");
-      });
+      if (this.id) {
+        const existingProductIndex = products.findIndex(
+          (prod) => prod.id === this.id
+        );
+        const updatedProducts = [...products];
+        updatedProducts[existingProductIndex] = this;
+        fs.writeFile(dataPath, JSON.stringify(updatedProducts), (error) => {
+          console.log(error, "error");
+        });
+      } else {
+        this.id = Math.random().toString();
+        products.push(this);
+        fs.writeFile(dataPath, JSON.stringify(products), (error) => {
+          console.log(error, "error");
+        });
+      }
     });
   }
 
