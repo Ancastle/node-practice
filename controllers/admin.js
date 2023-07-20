@@ -1,9 +1,22 @@
 const Product = require("../models/product");
 
 exports.getAddProduct = (req, res, next) => {
-  res.render("admin/add-product", {
+  res.render("admin/edit-product", {
     pageTitle: "Add a New Game",
-    active: "add-product",
+    active: "/admin/add-product",
+    editing: false,
+  });
+};
+
+exports.getEditProduct = (req, res, next) => {
+  const prodId = req.params.productId;
+  Product.findById(prodId, (product) => {
+    res.render("admin/edit-product", {
+      pageTitle: "Edit a Game",
+      active: "/admin/edit-product",
+      editing: true,
+      product: product,
+    });
   });
 };
 
