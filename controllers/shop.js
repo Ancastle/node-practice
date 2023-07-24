@@ -12,9 +12,26 @@ exports.getHome = (req, res, next) => {
 };
 
 exports.getCart = (req, res, next) => {
-  res.render("shop/cart", {
-    pageTitle: "Your Cart",
-    active: "/cart",
+  Cart.getCart((cart) => {
+    Product.fetchAll((products) => {
+      const cartProducts = [];
+      for (product of products) {
+        const productOfCart = cart.products.find(
+          (prod) => prod.id === product.id
+        );
+        if (productOfCart) {
+          cartProducts.push({
+            productData: product,
+            qty: productOfCart.qty,
+          });
+        }
+      }
+      res.render("shop/cart", {
+        pageTitle: "Your Cart",
+        active: "/cart",
+        products: cartProducts,
+      });
+    });
   });
 };
 
