@@ -6,7 +6,8 @@
     "express-handlebars": "^7.0.7",
     "mysql2": "^3.5.2",
     "nodemon": "^2.0.22",
-    "pug": "^3.0.2"
+    "pug": "^3.0.2",
+    "sequelize": "^6.32.1"
   },
   "scripts": {
     "start": "nodemon app.js"

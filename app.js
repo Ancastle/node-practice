@@ -3,6 +3,7 @@ const path = require("path");
 const bodyParser = require("body-parser");
 
 const errorController = require("./controllers/error");
+const sequelize = require("./utils/database");
 
 const app = express();
 
@@ -20,4 +21,9 @@ app.use(shopRoutes);
 
 app.use(errorController.notFound);
 
-app.listen(3000);
+sequelize
+  .sync()
+  .then((_) => {
+    app.listen(3000);
+  })
+  .catch((error) => console.log(error));
