@@ -1,20 +1,6 @@
-const fs = require("fs");
-const path = require("path");
-const rootPath = require("../utils/path");
-
-const dataPath = path.join(rootPath, "data", "products.json");
+const db = require("../utils/database");
 
 const Cart = require("./cart");
-
-const getProductsFromFile = (callBack) => {
-  fs.readFile(dataPath, (error, fileContent) => {
-    if (error) {
-      callBack([]);
-    } else {
-      callBack(JSON.parse(fileContent));
-    }
-  });
-};
 
 module.exports = class Product {
   constructor(id, title, imageUrl, description, price) {
@@ -26,47 +12,19 @@ module.exports = class Product {
   }
 
   save() {
-    getProductsFromFile((products) => {
-      if (this.id) {
-        const existingProductIndex = products.findIndex(
-          (prod) => prod.id === this.id
-        );
-        const updatedProducts = [...products];
-        updatedProducts[existingProductIndex] = this;
-        fs.writeFile(dataPath, JSON.stringify(updatedProducts), (error) => {
-          console.log(error, "error");
-        });
-      } else {
-        this.id = Math.random().toString();
-        products.push(this);
-        fs.writeFile(dataPath, JSON.stringify(products), (error) => {
-          console.log(error, "error");
-        });
-      }
-    });
+    return db.execute(
+      "INSERT INTO products (title, price, description, imageUrl) VALUES (?, ?, ?, ?)",
+      [this.title, this.price, this.description, this.imageUrl]
+    );
   }
 
-  static deleteById(productId) {
-    getProductsFromFile((products) => {
-      const product = products.find((prod) => prod.id === productId);
-      const newProducts = products.filter((prod) => prod.id !== productId);
-      if (product) {
-        fs.writeFile(dataPath, JSON.stringify(newProducts), (error) => {
-          if (!error) {
-            Cart.deleteProduct(productId, product.price);
-          }
-        });
-      }
-    });
+  static deleteById(productId) {}
+
+  static fetchAll() {
+    return db.execute("SELECT * FROM products");
   }
 
-  static fetchAll(callBack) {
-    getProductsFromFile(callBack);
-  }
-
-  static findById(id, callBack) {
-    getProductsFromFile((products) => {
-      callBack(products.find((product) => product.id === id));
-    });
+  static findById(productId) {
+    return db.execute("SELECT * FROM products WHERE id = ?", [productId]);
   }
 };
