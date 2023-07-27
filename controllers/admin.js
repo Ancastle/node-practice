@@ -33,11 +33,14 @@ exports.deleteProduct = (req, res, next) => {
 };
 
 exports.postAddProduct = (req, res, next) => {
-  const { title, imageUrl, description, price } = req.body;
-  const newProduct = new Product(null, title, imageUrl, description, price);
-  newProduct
-    .save()
-    .then(() => res.redirect("/"))
+  const { title, price, imageUrl, description } = req.body;
+  Product.create({
+    title,
+    price,
+    imageUrl,
+    description,
+  })
+    .then((_) => res.redirect("/"))
     .catch((error) => console.log(error));
 };
 
