@@ -10,8 +10,10 @@ exports.getAddProduct = (req, res, next) => {
 
 exports.getEditProduct = (req, res, next) => {
   const productId = req.params.productId;
-  Product.findByPk(productId)
-    .then((product) => {
+  req.user
+    .getProducts({ where: { id: productId } })
+    .then((products) => {
+      const product = products[0];
       if (!product) {
         return res.redirect("/");
       }
@@ -55,18 +57,20 @@ exports.deleteProduct = (req, res, next) => {
 
 exports.postAddProduct = (req, res, next) => {
   const { title, price, imageUrl, description } = req.body;
-  Product.create({
-    title,
-    price,
-    imageUrl,
-    description,
-  })
+  req.user
+    .createProduct({
+      title,
+      price,
+      imageUrl,
+      description,
+    })
     .then((_) => res.redirect("/"))
     .catch((error) => console.log(error));
 };
 
 exports.getAdminProducts = (req, res, next) => {
-  Product.findAll()
+  req.user
+    .getProducts()
     .then((products) =>
       res.render("admin/products", {
         pageTitle: "Admin Product List",
