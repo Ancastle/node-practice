@@ -6,6 +6,8 @@ const errorController = require("./controllers/error");
 const sequelize = require("./utils/database");
 const Product = require("./models/product");
 const User = require("./models/user");
+const Cart = require("./models/cart");
+const CartItem = require("./models/cartItem");
 
 const app = express();
 
@@ -35,6 +37,11 @@ app.use(errorController.notFound);
 Product.belongsTo(User, { constraints: true, onDelete: "CASCADE" });
 User.hasMany(Product);
 
+User.hasOne(Cart);
+Cart.belongsTo(User); // optional
+Cart.belongsToMany(Product, { through: CartItem }); // using the through key to let Sequelize know when to store this relation
+Product.belongsToMany(Cart, { through: CartItem });
+
 sequelize
   .sync()
   .then((_) => {
@@ -45,6 +52,13 @@ sequelize
       return User.create({ name: "Jorge", email: "test@test.com" });
     }
     return user;
+  })
+  .then((user) => {
+    user.getCart().then((cart) => {
+      if (!cart) {
+        user.createCart();
+      }
+    });
   })
   .then(() => {
     app.listen(3000);
