@@ -70,7 +70,7 @@ exports.postCartDeleteProduct = (req, res, next) => {
       product.cartItem.destroy();
       // destroy the association of the cart to the product
     })
-    .then(() => res.redirect("/cart"))
+    .finally(() => res.redirect("/cart"))
     .catch((err) => console.log(err));
 };
 
