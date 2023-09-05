@@ -7,7 +7,9 @@ const sequelize = require("./utils/database");
 const Product = require("./models/product");
 const User = require("./models/user");
 const Cart = require("./models/cart");
-const CartItem = require("./models/cartItem");
+const CartItem = require("./models/cart-item");
+const Order = require("./models/order");
+const OrderItem = require("./models/order-item");
 
 const app = express();
 
@@ -41,6 +43,10 @@ User.hasOne(Cart);
 Cart.belongsTo(User); // optional
 Cart.belongsToMany(Product, { through: CartItem }); // using the through key to let Sequelize know when to store this relation
 Product.belongsToMany(Cart, { through: CartItem });
+
+Order.belongsTo(User); // Users have orders
+User.hasMany(Order); // Orders have one User
+Order.belongsToMany(Product, { through: OrderItem });
 
 sequelize
   .sync()
