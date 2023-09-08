@@ -2,8 +2,12 @@ const express = require("express");
 const path = require("path");
 const bodyParser = require("body-parser");
 
+const mongoConnect = require("./utils/database").mongoConnect;
+
 const errorController = require("./controllers/error");
-const mongoConnect = require("./utils/database");
+
+const adminRoutes = require("./routes/admin");
+// const shopRoutes = require("./routes/shop");
 
 const app = express();
 
@@ -21,16 +25,12 @@ app.use(express.static(path.join(__dirname, "public")));
 //     .catch((error) => console.log(error));
 // });
 
-// const adminRoutes = require("./routes/admin");
-// const shopRoutes = require("./routes/shop");
-
-// app.use("/admin", adminRoutes);
+app.use("/admin", adminRoutes);
 
 // app.use(shopRoutes);
 
 // app.use(errorController.notFound);
 
-mongoConnect((client) => {
-  console.log(client);
+mongoConnect(() => {
   app.listen(3000);
 });
