@@ -1,7 +1,7 @@
 const Product = require("../models/product");
 
 exports.getHome = (req, res, next) => {
-  Product.findAll()
+  Product.fetchAll()
     .then((products) => {
       res.render("shop/home", {
         pageTitle: "Welcome Home",
@@ -74,7 +74,7 @@ exports.postCartDeleteProduct = (req, res, next) => {
 };
 
 exports.getProducts = (req, res, next) => {
-  Product.findAll()
+  Product.fetchAll()
     .then((products) => {
       res.render("shop/product-list", {
         pageTitle: "Product List",
