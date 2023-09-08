@@ -104,9 +104,9 @@ exports.getOrders = (req, res, next) => {
   });
 };
 
-exports.getProduct = (req, res, next) => {
+exports.getProduct = (req, res) => {
   const productId = req.params.productId;
-  Product.findByPk(productId)
+  Product.findById(productId)
     .then((product) => {
       res.render("shop/product-detail", {
         pageTitle: product.title,
