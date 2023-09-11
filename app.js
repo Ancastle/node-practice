@@ -9,6 +9,8 @@ const errorController = require("./controllers/error");
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
 
+const User = require("./models/user");
+
 const app = express();
 
 app.set("view engine", "ejs");
@@ -16,20 +18,20 @@ app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
-// app.use((req, res, next) => {
-//   User.findByPk(1)
-//     .then((user) => {
-//       req.user = user;
-//       next();
-//     })
-//     .catch((error) => console.log(error));
-// });
+app.use((req, res, next) => {
+  User.findById("64ff57e5a439ef05d8592075")
+    .then((user) => {
+      req.user = user;
+      next();
+    })
+    .catch((error) => console.log(error));
+});
 
 app.use("/admin", adminRoutes);
 
 app.use(shopRoutes);
 
-// app.use(errorController.notFound);
+app.use(errorController.notFound);
 
 mongoConnect(() => {
   app.listen(3000);
