@@ -64,9 +64,7 @@ exports.getCheckout = (req, res, next) => {
 };
 
 exports.getOrders = (req, res, next) => {
-  req.user.getOrders({ include: ["products"] }).then((orders) => {
-    // we need to use include products so sequelize adds a products key to each order with all the orderItems listed
-    // each product will have its own orderItem key which holds the orderItem table information
+  req.user.getOrders().then((orders) => {
     res.render("shop/orders", {
       pageTitle: "My Orders",
       active: "/orders",
