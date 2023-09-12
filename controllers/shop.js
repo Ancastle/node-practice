@@ -15,15 +15,13 @@ exports.getHome = (req, res, next) => {
 exports.getCart = (req, res, next) => {
   req.user
     .getCart()
-    .then((cart) => {
-      return cart.getProducts().then((products) =>
-        res.render("shop/cart", {
-          pageTitle: "Your Cart",
-          active: "/cart",
-          products: products,
-        })
-      );
-    })
+    .then((products) =>
+      res.render("shop/cart", {
+        pageTitle: "Your Cart",
+        active: "/cart",
+        products: products,
+      })
+    )
     .catch((err) => console.log(err));
 };
 
@@ -33,7 +31,9 @@ exports.postCart = (req, res, next) => {
     .then((product) => {
       return req.user.addToCart(product);
     })
-    .then(() => {});
+    .then(() => {
+      res.redirect("/cart");
+    });
 };
 
 exports.postCartDeleteProduct = (req, res, next) => {
