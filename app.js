@@ -1,8 +1,7 @@
 const express = require("express");
 const path = require("path");
 const bodyParser = require("body-parser");
-
-const mongoConnect = require("./utils/database").mongoConnect;
+const mongoose = require("mongoose");
 
 const errorController = require("./controllers/error");
 
@@ -35,6 +34,11 @@ app.use(shopRoutes);
 
 app.use(errorController.notFound);
 
-mongoConnect(() => {
-  app.listen(3000);
-});
+mongoose
+  .connect(
+    "mongodb+srv://janaya0625:sAbmihQIpJxQDbrK@cluster0.rzdlri4.mongodb.net/shop?retryWrites=true&w=majority"
+  )
+  .then(() => {
+    app.listen(3000);
+  })
+  .catch((err) => console.log(err));
