@@ -1,7 +1,19 @@
 const Product = require("../models/product");
 
+exports.getProducts = (req, res, next) => {
+  Product.find()
+    .then((products) => {
+      res.render("shop/product-list", {
+        pageTitle: "Product List",
+        active: "/products",
+        products: products,
+      });
+    })
+    .catch((error) => console.log(error));
+};
+
 exports.getHome = (req, res, next) => {
-  Product.fetchAll()
+  Product.find()
     .then((products) => {
       res.render("shop/home", {
         pageTitle: "Welcome Home",
@@ -42,18 +54,6 @@ exports.postCartDeleteProduct = (req, res, next) => {
     .deleteFromCart(productId)
     .finally(() => res.redirect("/cart"))
     .catch((err) => console.log(err));
-};
-
-exports.getProducts = (req, res, next) => {
-  Product.fetchAll()
-    .then((products) => {
-      res.render("shop/product-list", {
-        pageTitle: "Product List",
-        active: "/products",
-        products: products,
-      });
-    })
-    .catch((error) => console.log(error));
 };
 
 exports.getCheckout = (req, res, next) => {
