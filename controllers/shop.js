@@ -24,6 +24,19 @@ exports.getHome = (req, res, next) => {
     .catch((error) => console.log(error));
 };
 
+exports.getProduct = (req, res) => {
+  const productId = req.params.productId;
+  Product.findById(productId)
+    .then((product) => {
+      res.render("shop/product-detail", {
+        pageTitle: product.title,
+        active: "/products",
+        product: product,
+      });
+    })
+    .catch((err) => console.log(err));
+};
+
 exports.getCart = (req, res, next) => {
   req.user
     .getCart()
@@ -71,19 +84,6 @@ exports.getOrders = (req, res, next) => {
       orders: orders,
     });
   });
-};
-
-exports.getProduct = (req, res) => {
-  const productId = req.params.productId;
-  Product.findById(productId)
-    .then((product) => {
-      res.render("shop/product-detail", {
-        pageTitle: product.title,
-        active: "/products",
-        product: product,
-      });
-    })
-    .catch((err) => console.log(err));
 };
 
 exports.createOrder = (req, res, next) => {
