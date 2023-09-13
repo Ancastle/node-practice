@@ -1,5 +1,14 @@
 const Product = require("../models/product");
 
+exports.postAddProduct = (req, res, next) => {
+  const { title, price, imageUrl, description } = req.body;
+  const product = new Product({ title, price, imageUrl, description });
+  product
+    .save()
+    .then((_) => res.redirect("/"))
+    .catch((error) => console.log(error));
+};
+
 exports.getAddProduct = (req, res, next) => {
   res.render("admin/edit-product", {
     pageTitle: "Add a New Game",
@@ -48,22 +57,6 @@ exports.postDeleteProduct = (req, res, next) => {
     .then(() => {
       res.redirect("/admin/products");
     })
-    .catch((error) => console.log(error));
-};
-
-exports.postAddProduct = (req, res, next) => {
-  const { title, price, imageUrl, description } = req.body;
-  const product = new Product(
-    title,
-    price,
-    imageUrl,
-    description,
-    null,
-    req.user._id
-  );
-  product
-    .save()
-    .then((_) => res.redirect("/"))
     .catch((error) => console.log(error));
 };
 
