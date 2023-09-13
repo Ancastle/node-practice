@@ -18,15 +18,12 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use((req, res, next) => {
-  next();
-  // User.findById("64ff5d6c3e3d2701c551f5bb")
-  //   .then((user) => {
-  //     req.user = new User(user.name, user.email, user.cart, user._id);
-  //     // we need to create a new User object so we can use it's methods and not only
-  //     // the plain data from the database
-  //     next();
-  //   })
-  //   .catch((error) => console.log(error));
+  User.findById("65021b4d7dd1b61b0b6e7cc7")
+    .then((user) => {
+      req.user = user;
+      next();
+    })
+    .catch((error) => console.log(error));
 });
 
 app.use("/admin", adminRoutes);
