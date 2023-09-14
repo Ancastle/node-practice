@@ -18,7 +18,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use((req, res, next) => {
-  User.findById("65021b4d7dd1b61b0b6e7cc7")
+  User.findById("650221d98cd9482ffd5836ee")
     .then((user) => {
       req.user = user;
       next();
@@ -37,6 +37,12 @@ mongoose
     "mongodb+srv://janaya0625:sAbmihQIpJxQDbrK@cluster0.rzdlri4.mongodb.net/shop?retryWrites=true&w=majority"
   )
   .then(() => {
+    // const user = new User({
+    //   name: "Jorge",
+    //   email: "diossexual@hotmail.com",
+    //   cart: { items: [] },
+    // });
+    // user.save();
     app.listen(3000);
   })
   .catch((err) => console.log(err));
