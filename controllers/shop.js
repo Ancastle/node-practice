@@ -1,5 +1,5 @@
 const Product = require("../models/product");
-const User = require("../models/user");
+const Order = require("../models/order");
 
 exports.getProducts = (req, res, next) => {
   Product.find()
@@ -68,15 +68,8 @@ exports.postCartDeleteProduct = (req, res, next) => {
     .catch((err) => console.log(err));
 };
 
-exports.getCheckout = (req, res, next) => {
-  res.render("shop/checkout", {
-    pageTitle: "Checkut",
-    active: "/checkout",
-  });
-};
-
 exports.getOrders = (req, res, next) => {
-  req.user.getOrders().then((orders) => {
+  Order.find({ userId: req.user._id }).then((orders) => {
     res.render("shop/orders", {
       pageTitle: "My Orders",
       active: "/orders",
@@ -85,9 +78,27 @@ exports.getOrders = (req, res, next) => {
   });
 };
 
-exports.createOrder = (req, res, next) => {
-  req.user
-    .addOrder()
-    .then(() => res.redirect("/orders"))
-    .catch((error) => console.log(error));
+exports.createOrder = async (req, res, next) => {
+  const user = await req.user.populate("cart.items.productId");
+  const products = user.cart.items.map((item) => {
+    return {
+      productId: item.productId._id,
+      title: item.productId.title,
+      quantity: item.quantity,
+    };
+  });
+  const order = new Order({
+    userId: req.user._id,
+    items: products,
+  });
+
+  await order.save();
+  await req.user.clearCart();
+  const orders = await Order.find();
+
+  res.render("shop/orders", {
+    pageTitle: "My Orders",
+    active: "/orders",
+    orders: orders,
+  });
 };
