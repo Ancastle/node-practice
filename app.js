@@ -11,8 +11,6 @@ const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
 const authRoutes = require("./routes/auth");
 
-const User = require("./models/user");
-
 const MONGODB_URI =
   "mongodb+srv://janaya0625:sAbmihQIpJxQDbrK@cluster0.rzdlri4.mongodb.net/shop?retryWrites=true&w=majority";
 
@@ -34,15 +32,6 @@ app.use(
     store: store,
   })
 );
-
-app.use((req, res, next) => {
-  User.findById("650221d98cd9482ffd5836ee")
-    .then((user) => {
-      req.user = user;
-      next();
-    })
-    .catch((error) => console.log(error));
-});
 
 app.use("/admin", adminRoutes);
 

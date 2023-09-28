@@ -2,7 +2,7 @@ const Product = require("../models/product");
 
 exports.postAddProduct = (req, res, next) => {
   const { title, price, imageUrl, description } = req.body;
-  const user = req.user;
+  const user = req.session.user;
   const product = new Product({
     title,
     price,
@@ -17,26 +17,31 @@ exports.postAddProduct = (req, res, next) => {
 };
 
 exports.getAddProduct = (req, res, next) => {
+  const isAuthenticated = req.session.isLoggedIn;
   res.render("admin/edit-product", {
     pageTitle: "Add a New Game",
     active: "/admin/add-product",
     editing: false,
+    isAuthenticated: isAuthenticated,
   });
 };
 
 exports.getAdminProducts = (req, res, next) => {
+  const isAuthenticated = req.session.isLoggedIn;
   Product.find()
     .then((products) =>
       res.render("admin/products", {
         pageTitle: "Admin Product List",
         active: "/admin/products",
         products: products,
+        isAuthenticated: isAuthenticated,
       })
     )
     .catch((error) => console.log(error));
 };
 
 exports.getEditProduct = (req, res, next) => {
+  const isAuthenticated = req.session.isLoggedIn;
   const productId = req.params.productId;
   Product.findById(productId)
     .then((product) => {
@@ -48,6 +53,7 @@ exports.getEditProduct = (req, res, next) => {
         active: "/admin/edit-product",
         editing: true,
         product: product,
+        isAuthenticated: isAuthenticated,
       });
     })
     .catch((error) => console.log(error));

@@ -1,3 +1,5 @@
+const User = require("../models/user");
+
 exports.getLogin = (req, res, next) => {
   const isAuthenticated = req.session.isLoggedIn;
   res.render("auth/login", {
@@ -8,6 +10,11 @@ exports.getLogin = (req, res, next) => {
 };
 
 exports.postLogin = (req, res, next) => {
-  req.session.isLoggedIn = true;
-  res.redirect("/");
+  User.findById("650221d98cd9482ffd5836ee")
+    .then((user) => {
+      req.session.isLoggedIn = true;
+      req.session.user = user;
+      res.redirect("/");
+    })
+    .catch((error) => console.log(error));
 };
