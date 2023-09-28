@@ -1,6 +1,5 @@
 const Product = require("../models/product");
 const Order = require("../models/order");
-const User = require("../models/user");
 
 exports.getProducts = (req, res, next) => {
   const isAuthenticated = req.session.isLoggedIn;
@@ -47,29 +46,22 @@ exports.getProduct = (req, res) => {
 
 exports.getCart = (req, res, next) => {
   const isAuthenticated = req.session.isLoggedIn;
-  User.findById(req.session.user._id)
-    .populate("cart.items.productId")
-    .then((user) => {
-      const products = user.cart.items;
-      res.render("shop/cart", {
-        pageTitle: "Your Cart",
-        active: "/cart",
-        products: products,
-        isAuthenticated: isAuthenticated,
-      });
+  req.user.populate("cart.items.productId").then((user) => {
+    const products = user.cart.items;
+    res.render("shop/cart", {
+      pageTitle: "Your Cart",
+      active: "/cart",
+      products: products,
+      isAuthenticated: isAuthenticated,
     });
+  });
 };
 
 exports.postCart = (req, res, next) => {
   const prodId = req.body.productId;
-  let product;
   Product.findById(prodId)
-    .then((p) => {
-      product = p;
-      return User.findById(req.session.user._id);
-    })
-    .then((user) => {
-      return user.addToCart(product);
+    .then((product) => {
+      req.user.addToCart(product);
     })
     .then(() => {
       res.redirect("/cart");
@@ -78,7 +70,7 @@ exports.postCart = (req, res, next) => {
 
 exports.postCartDeleteProduct = (req, res, next) => {
   const productId = req.body.productId;
-  User.findById(req.session.user._id)
+  req.user
     .removeFromCart(productId)
     .finally(() => res.redirect("/cart"))
     .catch((err) => console.log(err));
@@ -86,7 +78,7 @@ exports.postCartDeleteProduct = (req, res, next) => {
 
 exports.getOrders = (req, res, next) => {
   const isAuthenticated = req.session.isLoggedIn;
-  Order.find({ userId: req.session.user._id }).then((orders) => {
+  Order.find({ userId: req.user._id }).then((orders) => {
     res.render("shop/orders", {
       pageTitle: "My Orders",
       active: "/orders",
@@ -98,9 +90,7 @@ exports.getOrders = (req, res, next) => {
 
 exports.createOrder = async (req, res, next) => {
   const isAuthenticated = req.session.isLoggedIn;
-  const user = await User.findById(req.session.user._id).populate(
-    "cart.items.productId"
-  );
+  const user = await req.user.populate("cart.items.productId");
   const products = user.cart.items.map((item) => {
     return {
       productId: item.productId._id,
@@ -109,12 +99,12 @@ exports.createOrder = async (req, res, next) => {
     };
   });
   const order = new Order({
-    userId: req.session.user._id,
+    userId: req.user._id,
     items: products,
   });
 
   await order.save();
-  await User.findById(req.session.user._id).clearCart();
+  await req.user.clearCart();
   const orders = await Order.find();
 
   res.render("shop/orders", {

@@ -11,6 +11,8 @@ const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
 const authRoutes = require("./routes/auth");
 
+const User = require("./models/user");
+
 const MONGODB_URI =
   "mongodb+srv://janaya0625:sAbmihQIpJxQDbrK@cluster0.rzdlri4.mongodb.net/shop?retryWrites=true&w=majority";
 
@@ -32,6 +34,21 @@ app.use(
     store: store,
   })
 );
+
+app.use((req, res, next) => {
+  const userId = req.session.user && req.session.user._id;
+  if (userId) {
+    User.findById(req.session.user._id)
+      .then((user) => {
+        req.user = user;
+        next();
+      })
+      .catch((error) => console.log(error));
+  } else {
+    req.user = null;
+    next();
+  }
+});
 
 app.use("/admin", adminRoutes);
 

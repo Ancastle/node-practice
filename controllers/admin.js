@@ -2,7 +2,7 @@ const Product = require("../models/product");
 
 exports.postAddProduct = (req, res, next) => {
   const { title, price, imageUrl, description } = req.body;
-  const user = req.session.user;
+  const user = req.user;
   const product = new Product({
     title,
     price,
