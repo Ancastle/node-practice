@@ -9,7 +9,6 @@ exports.getProducts = (req, res, next) => {
         pageTitle: "Product List",
         active: "/products",
         products: products,
-        isAuthenticated: isAuthenticated,
       });
     })
     .catch((error) => console.log(error));
@@ -23,7 +22,6 @@ exports.getHome = (req, res, next) => {
         pageTitle: "Welcome Home",
         active: "/",
         products: products,
-        isAuthenticated: isAuthenticated,
       });
     })
     .catch((error) => console.log(error));
@@ -38,7 +36,6 @@ exports.getProduct = (req, res) => {
         pageTitle: product.title,
         active: "/products",
         product: product,
-        isAuthenticated: isAuthenticated,
       });
     })
     .catch((err) => console.log(err));
@@ -52,7 +49,6 @@ exports.getCart = (req, res, next) => {
       pageTitle: "Your Cart",
       active: "/cart",
       products: products,
-      isAuthenticated: isAuthenticated,
     });
   });
 };
@@ -83,7 +79,6 @@ exports.getOrders = (req, res, next) => {
       pageTitle: "My Orders",
       active: "/orders",
       orders: orders,
-      isAuthenticated: isAuthenticated,
     });
   });
 };
@@ -111,6 +106,5 @@ exports.createOrder = async (req, res, next) => {
     pageTitle: "My Orders",
     active: "/orders",
     orders: orders,
-    isAuthenticated: isAuthenticated,
   });
 };

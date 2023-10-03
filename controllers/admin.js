@@ -22,7 +22,6 @@ exports.getAddProduct = (req, res, next) => {
     pageTitle: "Add a New Game",
     active: "/admin/add-product",
     editing: false,
-    isAuthenticated: isAuthenticated,
   });
 };
 
@@ -34,7 +33,6 @@ exports.getAdminProducts = (req, res, next) => {
         pageTitle: "Admin Product List",
         active: "/admin/products",
         products: products,
-        isAuthenticated: isAuthenticated,
       })
     )
     .catch((error) => console.log(error));
@@ -53,7 +51,6 @@ exports.getEditProduct = (req, res, next) => {
         active: "/admin/edit-product",
         editing: true,
         product: product,
-        isAuthenticated: isAuthenticated,
       });
     })
     .catch((error) => console.log(error));
