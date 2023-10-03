@@ -61,12 +61,6 @@ app.use(errorController.notFound);
 mongoose
   .connect(MONGODB_URI)
   .then(() => {
-    // const user = new User({
-    //   name: "Jorge",
-    //   email: "diossexual@hotmail.com",
-    //   cart: { items: [] },
-    // });
-    // user.save();
     app.listen(3000);
   })
   .catch((err) => console.log(err));
