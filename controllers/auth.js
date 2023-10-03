@@ -26,3 +26,14 @@ exports.postLogout = (req, res, next) => {
     res.redirect("/");
   });
 };
+
+exports.getSignup = (req, res, next) => {
+  const isAuthenticated = req.session.isLoggedIn;
+  res.render("auth/signup", {
+    pageTitle: "Sign Up",
+    active: "/signup",
+    isAuthenticated: isAuthenticated,
+  });
+};
+
+exports.postSignup = (req, res, next) => {};
