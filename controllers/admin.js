@@ -17,7 +17,6 @@ exports.postAddProduct = (req, res, next) => {
 };
 
 exports.getAddProduct = (req, res, next) => {
-  const isAuthenticated = req.session.isLoggedIn;
   res.render("admin/edit-product", {
     pageTitle: "Add a New Game",
     active: "/admin/add-product",
@@ -26,7 +25,6 @@ exports.getAddProduct = (req, res, next) => {
 };
 
 exports.getAdminProducts = (req, res, next) => {
-  const isAuthenticated = req.session.isLoggedIn;
   Product.find()
     .then((products) =>
       res.render("admin/products", {
@@ -39,7 +37,6 @@ exports.getAdminProducts = (req, res, next) => {
 };
 
 exports.getEditProduct = (req, res, next) => {
-  const isAuthenticated = req.session.isLoggedIn;
   const productId = req.params.productId;
   Product.findById(productId)
     .then((product) => {

@@ -2,7 +2,6 @@ const Product = require("../models/product");
 const Order = require("../models/order");
 
 exports.getProducts = (req, res, next) => {
-  const isAuthenticated = req.session.isLoggedIn;
   Product.find()
     .then((products) => {
       res.render("shop/product-list", {
@@ -15,7 +14,6 @@ exports.getProducts = (req, res, next) => {
 };
 
 exports.getHome = (req, res, next) => {
-  const isAuthenticated = req.session.isLoggedIn;
   Product.find()
     .then((products) => {
       res.render("shop/home", {
@@ -28,7 +26,6 @@ exports.getHome = (req, res, next) => {
 };
 
 exports.getProduct = (req, res) => {
-  const isAuthenticated = req.session.isLoggedIn;
   const productId = req.params.productId;
   Product.findById(productId)
     .then((product) => {
@@ -42,7 +39,6 @@ exports.getProduct = (req, res) => {
 };
 
 exports.getCart = (req, res, next) => {
-  const isAuthenticated = req.session.isLoggedIn;
   req.user.populate("cart.items.productId").then((user) => {
     const products = user.cart.items;
     res.render("shop/cart", {
@@ -73,7 +69,6 @@ exports.postCartDeleteProduct = (req, res, next) => {
 };
 
 exports.getOrders = (req, res, next) => {
-  const isAuthenticated = req.session.isLoggedIn;
   Order.find({ userId: req.user._id }).then((orders) => {
     res.render("shop/orders", {
       pageTitle: "My Orders",
@@ -84,7 +79,6 @@ exports.getOrders = (req, res, next) => {
 };
 
 exports.createOrder = async (req, res, next) => {
-  const isAuthenticated = req.session.isLoggedIn;
   const user = await req.user.populate("cart.items.productId");
   const products = user.cart.items.map((item) => {
     return {
