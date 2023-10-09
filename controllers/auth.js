@@ -94,3 +94,11 @@ exports.postSignup = async (req, res, next) => {
     })
     .catch((err) => console.log(err));
 };
+
+exports.getReset = (req, res, next) => {
+  res.render("auth/reset", {
+    active: "/reset",
+    pageTitle: "Reset Password",
+    errorMessage: req.flash("error")[0],
+  });
+};
