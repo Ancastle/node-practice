@@ -130,3 +130,47 @@ exports.postReset = (req, res, next) => {
       .catch((err) => console.log(err));
   });
 };
+
+exports.getNewPassword = (req, res, next) => {
+  const token = req.params.token;
+  User.findOne({
+    resetToken: token,
+    resetTokenExpiration: { $gt: Date.now() },
+  })
+    .then((user) => {
+      res.render("auth/new-password", {
+        active: "/new-password",
+        pageTitle: "New Password",
+        errorMessage: req.flash("error")[0],
+        userId: user._id.toString(),
+        passwordToken: token,
+      });
+    })
+    .catch((err) => console.log(err));
+};
+
+exports.postNewPassword = (req, res, next) => {
+  const newPassword = req.body.password;
+  const userId = req.body.userId;
+  const passwordToken = req.body.passwordToken;
+  let resettingUser;
+  User.findOne({
+    resetToken: passwordToken,
+    resetTokenExpiration: { $gt: Date.now() }, // $gt special caracter to indicate greater than
+    _id: userId,
+  })
+    .then((user) => {
+      resettingUser = user;
+      return bcrypt.hash(newPassword, 12);
+    })
+    .then((hashedPassword) => {
+      resettingUser.password = hashedPassword;
+      resettingUser.resetToken = null;
+      resettingUser.resetTokenExpiration = null;
+      return resettingUser.save();
+    })
+    .then(() => {
+      res.redirect("/login");
+    })
+    .catch((err) => console.log(err));
+};
