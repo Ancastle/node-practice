@@ -3,6 +3,7 @@ const { check, body } = require("express-validator");
 const router = express.Router();
 
 const authController = require("../controllers/auth");
+const User = require("../models/user");
 
 router.get("/login", authController.getLogin);
 
@@ -18,12 +19,12 @@ router.post(
     check("email")
       .isEmail()
       .withMessage("Please enter a valid email")
-      .custom((value, { req }) => {
-        if (value === "j-anaya-@hotmail.com") {
-          throw new Error("This email address is forbidden.");
-        }
-        return true; // important to return true if your custom validation
-        // succeed so the flow can continue
+      .custom(async (value) => {
+        return User.findOne({ email: value }).then((userDoc) => {
+          if (userDoc) {
+            return Promise.reject("Email exists, please pick a different one");
+          }
+        });
       }),
     body(
       "password",
@@ -31,6 +32,12 @@ router.post(
     )
       .isLength({ min: 5 })
       .isAlphanumeric(),
+    body("confirmPassword").custom((value, { req }) => {
+      if (value !== req.body.password) {
+        throw new Error("Passwords do not match!");
+      }
+      return true;
+    }),
   ],
   authController.postSignup
 );

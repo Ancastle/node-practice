@@ -78,33 +78,25 @@ exports.postSignup = async (req, res, next) => {
       errorMessage: errors.array()[0].msg,
     });
   }
-  User.findOne({ email: email })
-    .then((user) => {
-      if (user) {
-        req.flash("error", "Email already exists.");
-        return res.redirect("/signup");
-      }
-      return bcrypt
-        .hash(password, 12)
-        .then((hashedPassword) => {
-          const newUser = new User({
-            email: email,
-            password: hashedPassword,
-            cart: { items: [] },
-          });
-          return newUser.save();
-        })
-        .then(() => {
-          res.redirect("/login");
-          return transporter.sendMail({
-            to: email,
-            from: "janaya0625@gmail.com",
-            subject: "heyyy good job",
-            html: "<h1>GOOD JOB</h1>",
-          });
-        });
+  bcrypt
+    .hash(password, 12)
+    .then((hashedPassword) => {
+      const newUser = new User({
+        email: email,
+        password: hashedPassword,
+        cart: { items: [] },
+      });
+      return newUser.save();
     })
-    .catch((err) => console.log(err));
+    .then(() => {
+      res.redirect("/login");
+      return transporter.sendMail({
+        to: email,
+        from: "janaya0625@gmail.com",
+        subject: "heyyy good job",
+        html: "<h1>GOOD JOB</h1>",
+      });
+    });
 };
 
 exports.getReset = (req, res, next) => {
