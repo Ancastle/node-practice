@@ -18,6 +18,10 @@ exports.getLogin = (req, res, next) => {
     pageTitle: "Login",
     active: "/login",
     errorMessage: req.flash("error")[0],
+    oldInput: {
+      email: "",
+      password: "",
+    },
   });
 };
 
@@ -30,13 +34,18 @@ exports.postLogin = (req, res, next) => {
       pageTitle: "Login",
       active: "/login",
       errorMessage: errors.array()[0].msg,
+      oldInput: { email, password },
     });
   }
   User.findOne({ email: email })
     .then((user) => {
       if (!user) {
-        req.flash("error", "Invalid email or password.");
-        return res.redirect("/login");
+        return res.status(400).render("auth/login", {
+          pageTitle: "Login",
+          active: "/login",
+          errorMessage: "Invalid email or password.",
+          oldInput: { email, password },
+        });
       }
       bcrypt
         .compare(password, user.password)
@@ -49,7 +58,12 @@ exports.postLogin = (req, res, next) => {
             });
           }
           req.flash("error", "Invalid email or password.");
-          res.redirect("/login");
+          return res.status(400).render("auth/login", {
+            pageTitle: "Login",
+            active: "/login",
+            errorMessage: "Invalid email or password.",
+            oldInput: { email, password },
+          });
         })
         .catch((err) => {
           console.log(err);
