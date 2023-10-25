@@ -75,6 +75,7 @@ exports.getSignup = (req, res, next) => {
       password: "",
       confirmPassword: "",
     },
+    validationErrors: [],
   });
 };
 
@@ -91,6 +92,7 @@ exports.postSignup = async (req, res, next) => {
       active: "/signup",
       errorMessage: errors.array()[0].msg,
       oldInput: { email, password, confirmPassword },
+      validationErrors: errors.array(),
     });
   }
   bcrypt
