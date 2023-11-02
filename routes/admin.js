@@ -15,7 +15,6 @@ router.post(
     body("title", "The title must be between 6 and 30 characters long.")
       .isLength({ min: 6, max: 30 })
       .trim(),
-    body("imageUrl", "Enter a valid imageURL for your product").isURL().trim(),
     body("price", "Enter a valid money amount").isNumeric().trim(),
     body(
       "description",
@@ -38,7 +37,6 @@ router.post(
     body("title", "The title must be between 6 and 30 characters long.")
       .isLength({ min: 6, max: 30 })
       .trim(),
-    body("imageUrl", "Enter a valid imageURL for your product").isURL().trim(),
     body("price", "Enter a valid money amount").isNumeric().trim(),
     body(
       "description",
