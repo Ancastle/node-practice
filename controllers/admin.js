@@ -1,4 +1,5 @@
 const Product = require("../models/product");
+const { validationResult } = require("express-validator");
 
 exports.postAddProduct = (req, res, next) => {
   const { title, price, imageUrl, description } = req.body;
@@ -10,6 +11,21 @@ exports.postAddProduct = (req, res, next) => {
     description,
     userId: user._id,
   });
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).render("admin/edit-product", {
+      pageTitle: "Add a new Product",
+      active: "/admin/edit-product",
+      editing: false,
+      errorMessage: errors.array()[0].msg,
+      oldInput: {
+        title,
+        imageUrl,
+        price,
+        description,
+      },
+    });
+  }
   product
     .save()
     .then((_) => res.redirect("/"))
@@ -21,6 +37,13 @@ exports.getAddProduct = (req, res, next) => {
     pageTitle: "Add a New Game",
     active: "/admin/add-product",
     editing: false,
+    errorMessage: "",
+    oldInput: {
+      title: "",
+      imageUrl: "",
+      price: "",
+      description: "",
+    },
   });
 };
 
@@ -48,6 +71,13 @@ exports.getEditProduct = (req, res, next) => {
         active: "/admin/edit-product",
         editing: true,
         product: product,
+        errorMessage: "",
+        oldInput: {
+          title: "",
+          imageUrl: "",
+          price: "",
+          description: "",
+        },
       });
     })
     .catch((error) => console.log(error));
@@ -55,9 +85,32 @@ exports.getEditProduct = (req, res, next) => {
 
 exports.postEditProduct = (req, res, next) => {
   const { productId, title, imageUrl, description, price } = req.body;
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).render("admin/edit-product", {
+      pageTitle: "Edit Product",
+      active: "/admin/edit-product",
+      editing: true,
+      errorMessage: errors.array()[0].msg,
+      product: {
+        _id: productId,
+        title,
+        imageUrl,
+        price,
+        description,
+      },
+      oldInput: {
+        title,
+        imageUrl,
+        price,
+        description,
+      },
+    });
+  }
+
   Product.findById(productId)
     .then((product) => {
-      if (product.id.toString() !== req.user._id.toString()) {
+      if (product.userId.toString() !== req.user._id.toString()) {
         return res.redirect("/");
       }
       product.title = title;
