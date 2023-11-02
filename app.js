@@ -46,10 +46,17 @@ app.use((req, res, next) => {
   if (userId) {
     User.findById(req.session.user._id)
       .then((user) => {
+        if (!user) {
+          return next();
+        }
         req.user = user;
         next();
       })
-      .catch((error) => console.log(error));
+      .catch((err) => {
+        const error = new Error(err);
+        error.httpStatusCode = 500;
+        return next(error);
+      });
   } else {
     req.user = null;
     next();
@@ -70,9 +77,20 @@ app.use(authRoutes);
 
 app.use(errorController.notFound);
 
+app.use((error, req, res, next) => {
+  res.status(500).render("500", {
+    pageTitle: "Page Not Found",
+    active: null,
+  });
+});
+
 mongoose
   .connect(MONGODB_URI)
   .then(() => {
     app.listen(3000);
   })
-  .catch((err) => console.log(err));
+  .catch((err) => {
+    const error = new Error(err);
+    error.httpStatusCode = 500;
+    return next(error);
+  });
