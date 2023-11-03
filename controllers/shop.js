@@ -140,7 +140,14 @@ exports.getInvoice = (req, res, next) => {
       pdfDoc.pipe(fs.createWriteStream(invoicePath));
       pdfDoc.pipe(res);
 
-      pdfDoc.text("Hello World");
+      pdfDoc.fontSize(26).text("Invoice", {
+        underline: true,
+      });
+
+      pdfDoc.text("--------------------");
+      order.items.forEach((item) => {
+        pdfDoc.text(`${item.title} - x${item.quantity}`);
+      });
       pdfDoc.end();
 
       res.setHeader("Content-Type", "application/pdf");
