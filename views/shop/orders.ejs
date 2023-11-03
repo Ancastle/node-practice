@@ -13,7 +13,7 @@
                         <h1>Order - # <%= order._id %></h1>
                         <ul>
                             <% order.items.forEach(item =>  { %>
-                                <li><%= item.title %> (<%=item.quantity%>)</li>
+                                <li><%= item.title %> (<%=item.quantity%>) - <a target="_blank" src="/orders/<%= order._id %>">Invoice</a></li>
                             <% }); %>
                         </ul>
                     </li>

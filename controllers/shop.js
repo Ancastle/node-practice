@@ -1,3 +1,5 @@
+const fs = require("fs");
+const path = require("path");
 const Product = require("../models/product");
 const Order = require("../models/order");
 
@@ -117,4 +119,42 @@ exports.createOrder = async (req, res, next) => {
     active: "/orders",
     orders: orders,
   });
+};
+
+exports.getInvoice = (req, res, next) => {
+  const orderId = req.params.orderId;
+  Order.findById(orderId)
+    .then((order) => {
+      if (!order) {
+        return next(new Error("No order found"));
+      }
+      if (order.userId.toString() !== req.user._id.toString()) {
+        return next(new Error("Unauthorized request"));
+      }
+      const invoiceName = "invoice-" + orderId + ".pdf";
+      const invoicePath = path.join("data", "invoices", invoiceName);
+      // PRELOADING DATA
+      // fs.readFile(invoicePath, (err, data) => {
+      //   if (err) {
+      //     next(err);
+      //   }
+      //   res.setHeader("Content-Type", "application/pdf");
+      //   res.setHeader(
+      //     "Content-Disposition",
+      //     `attachment; filename=${invoiceName}`
+      //   );
+      //   res.send(data);
+      // });
+      // STREAMING DATA
+      const file = fs.createReadStream(invoicePath);
+      res.setHeader("Content-Type", "application/pdf");
+      res.setHeader(
+        "Content-Disposition",
+        `attachment; filename=${invoiceName}`
+      );
+      file.pipe(res);
+    })
+    .catch((err) => {
+      return next(new Error("Error in the server"));
+    });
 };
