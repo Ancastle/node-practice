@@ -87,14 +87,19 @@ exports.getProduct = (req, res) => {
 };
 
 exports.getCart = (req, res, next) => {
-  req.user.populate("cart.items.productId").then((user) => {
-    const products = user.cart.items;
-    res.render("shop/cart", {
-      pageTitle: "Your Cart",
-      active: "/cart",
-      products: products,
+  req.user
+    .populate("cart.items.productId")
+    .then((user) => {
+      const products = user.cart.items;
+      res.render("shop/cart", {
+        pageTitle: "Your Cart",
+        active: "/cart",
+        products: products,
+      });
+    })
+    .catch((err) => {
+      return next(new Error(err));
     });
-  });
 };
 
 exports.postCart = (req, res, next) => {
@@ -190,5 +195,26 @@ exports.getInvoice = (req, res, next) => {
     })
     .catch((err) => {
       return next(new Error("Error in the server"));
+    });
+};
+
+exports.getCheckout = (req, res, next) => {
+  req.user
+    .populate("cart.items.productId")
+    .then((user) => {
+      const products = user.cart.items;
+      let total = 0;
+      products.forEach((p) => {
+        total += p.quantity * p.productId.price;
+      });
+      res.render("shop/checkout", {
+        active: "/checkout",
+        pageTitle: "Checkout",
+        products: products,
+        totalSum: total,
+      });
+    })
+    .catch((err) => {
+      return next(new Error(err));
     });
 };
