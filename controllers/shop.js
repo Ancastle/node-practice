@@ -1,6 +1,9 @@
 const fs = require("fs");
 const path = require("path");
 const PDFDocument = require("pdfkit");
+const stripe = require("stripe")(
+  "sk_test_51O9xrbLYCcDfMMfkfJX2p2MmDAlYZXGmV5TLBwwSsZxQGL8O4SDWdLhKIa70mBhB0vuevJXiCNpvVobFy2VUZaUx00PrfMSlff"
+); // this is the private key in the Stripe developers console
 
 const Product = require("../models/product");
 const Order = require("../models/order");
@@ -199,19 +202,46 @@ exports.getInvoice = (req, res, next) => {
 };
 
 exports.getCheckout = (req, res, next) => {
+  let products;
+  let total = 0;
   req.user
     .populate("cart.items.productId")
     .then((user) => {
-      const products = user.cart.items;
-      let total = 0;
+      products = user.cart.items;
+      total = 0;
       products.forEach((p) => {
         total += p.quantity * p.productId.price;
       });
+      return stripe.checkout.sessions.create({
+        payment_method_types: ["card"],
+        mode: "payment",
+        line_items: products.map((p) => {
+          return {
+            price_data: {
+              unit_amount: p.productId.price * 100,
+              product_data: {
+                name: p.productId.title,
+                description: p.productId.description,
+                images: [
+                  "https://images.freeimages.com/images/large-previews/bc4/curious-bird-1-1374322.jpg",
+                ],
+              },
+              currency: "usd",
+            },
+            quantity: p.quantity,
+          };
+        }),
+        success_url: `${req.protocol}://${req.get("host")}/checkout/success`,
+        success_url: `${req.protocol}://${req.get("host")}/checkout/cancel`,
+      });
+    })
+    .then((session) => {
       res.render("shop/checkout", {
         active: "/checkout",
         pageTitle: "Checkout",
         products: products,
         totalSum: total,
+        sessionId: session.id,
       });
     })
     .catch((err) => {
