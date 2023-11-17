@@ -30,9 +30,6 @@ const store = new MongodbStore({
 });
 const csrfProtection = csrf();
 
-const privateKey = fs.readFileSync("server.key");
-const certificate = fs.readFileSync("server.cert");
-
 const fileStorage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "images");
@@ -59,7 +56,6 @@ const accessLogStream = fs.createWriteStream(
 );
 app.set("view engine", "ejs");
 app.use(helmet());
-app.use(compression());
 app.use(morgan("combined", { stream: accessLogStream }));
 
 app.use(bodyParser.urlencoded({ extended: false }));
