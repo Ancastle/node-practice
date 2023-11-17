@@ -16,8 +16,7 @@ const authRoutes = require("./routes/auth");
 
 const User = require("./models/user");
 
-const MONGODB_URI =
-  "mongodb+srv://janaya0625:sAbmihQIpJxQDbrK@cluster0.rzdlri4.mongodb.net/shop?retryWrites=true&w=majority";
+const MONGODB_URI = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.rzdlri4.mongodb.net/${process.env.MONGO_DEFAULT_DATABASE}?retryWrites=true&w=majority`;
 
 const app = express();
 const store = new MongodbStore({
@@ -112,7 +111,7 @@ app.use((error, req, res, next) => {
 mongoose
   .connect(MONGODB_URI)
   .then(() => {
-    app.listen(3000);
+    app.listen(process.env.PORT || 3000);
   })
   .catch((err) => {
     const error = new Error(err);

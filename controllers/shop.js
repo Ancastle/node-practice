@@ -1,9 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const PDFDocument = require("pdfkit");
-const stripe = require("stripe")(
-  "sk_test_51O9xrbLYCcDfMMfkfJX2p2MmDAlYZXGmV5TLBwwSsZxQGL8O4SDWdLhKIa70mBhB0vuevJXiCNpvVobFy2VUZaUx00PrfMSlff"
-); // this is the private key in the Stripe developers console
+const stripe = require("stripe")(process.env.STRIPE_KEY); // this is the private key in the Stripe developers console
 
 const Product = require("../models/product");
 const Order = require("../models/order");

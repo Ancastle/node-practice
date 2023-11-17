@@ -22,6 +22,6 @@
     "stripe": "^14.3.0"
   },
   "scripts": {
-    "start": "nodemon app.js"
+    "start": "SET MONGO_USER=janaya0625&&SET MONGO_PASSWORD=sAbmihQIpJxQDbrK&&SET MONGO_DEFAULT_DATABASE=shop&&SET STRIPE_KEY=sk_test_51O9xrbLYCcDfMMfkfJX2p2MmDAlYZXGmV5TLBwwSsZxQGL8O4SDWdLhKIa70mBhB0vuevJXiCNpvVobFy2VUZaUx00PrfMSlff&&node app.js"
   }
 }
